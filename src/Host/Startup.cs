@@ -5,9 +5,7 @@
 using System.Linq;
 using System.Reflection;
 using Host.Configuration;
-using IdentityServer4.EntityFramework;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,13 +30,17 @@ namespace Host
                 .SetTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
 
-                .AddConfigurationStore(builder =>
-                    builder.UseSqlServer(connectionString,
-                        options => options.MigrationsAssembly(migrationsAssembly)))
+                .AddConfigurationStore(options =>
+                {
+                    options.DbContextOptionsBuilder = builder => builder.UseSqlServer(connectionString,
+                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
+                })
 
-                .AddOperationalStore(builder =>
-                    builder.UseSqlServer(connectionString,
-                        options => options.MigrationsAssembly(migrationsAssembly)));
+                .AddOperationalStore(options =>
+                {
+                    options.DbContextOptionsBuilder = builder => builder.UseSqlServer(connectionString,
+                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
+                });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

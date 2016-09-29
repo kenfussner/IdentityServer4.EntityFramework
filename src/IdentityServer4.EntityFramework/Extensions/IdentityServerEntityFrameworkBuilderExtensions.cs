@@ -2,13 +2,13 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityServer4.EntityFramework.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Services;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -16,9 +16,16 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class IdentityServerEntityFrameworkBuilderExtensions
     {
         public static IIdentityServerBuilder AddConfigurationStore(
-            this IIdentityServerBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
+            this IIdentityServerBuilder builder, 
+            Action<ConfigurationStoreOptions> optionsAction = null)
         {
-            builder.Services.AddDbContext<ConfigurationDbContext>(optionsAction);
+            var options = new ConfigurationStoreOptions();
+            if (optionsAction != null)
+            {
+                optionsAction(options);
+            }
+            IdentityServer4.EntityFramework.Constants.ConfigurationStoreDefaultSchema = options.DefaultSchema;
+            builder.Services.AddDbContext<ConfigurationDbContext>(options.DbContextOptionsBuilder);
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
@@ -48,9 +55,15 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
-            Action<DbContextOptionsBuilder> optionsAction = null)
+            Action<OperationalStoreOptions> optionsAction = null)
         {
-           builder.Services.AddDbContext<PersistedGrantDbContext>(optionsAction);
+            var options = new OperationalStoreOptions();
+            if (optionsAction != null)
+            {
+                optionsAction(options);
+            }
+            IdentityServer4.EntityFramework.Constants.OperationalStoreDefaultSchema = options.DefaultSchema;
+            builder.Services.AddDbContext<PersistedGrantDbContext>(options.DbContextOptionsBuilder);
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
