@@ -7,12 +7,21 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using IdentityServer4.EntityFramework.Configuration;
 
 namespace IdentityServer4.EntityFramework.DbContexts
 {
     public class PersistedGrantDbContext : DbContext, IPersistedGrantDbContext
     {
-        public PersistedGrantDbContext(DbContextOptions<PersistedGrantDbContext> options) : base(options) { }
+        OperationalStoreOptions _operationalStoreOptions;
+
+        public PersistedGrantDbContext(DbContextOptions<PersistedGrantDbContext> options) : this(options, null) { }
+
+        public PersistedGrantDbContext(DbContextOptions<PersistedGrantDbContext> options, OperationalStoreOptions operationalStoreOptions) 
+            : base(options)
+        {
+            _operationalStoreOptions = operationalStoreOptions ?? new OperationalStoreOptions();
+        }
 
         public DbSet<PersistedGrant> PersistedGrants { get; set; }
 
@@ -23,7 +32,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ConfigurePersistedGrantContext();
+            modelBuilder.ConfigurePersistedGrantContext(_operationalStoreOptions);
 
             base.OnModelCreating(modelBuilder);
         }

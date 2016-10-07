@@ -30,17 +30,11 @@ namespace Host
                 .SetTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
 
-                .AddConfigurationStore(options =>
-                {
-                    options.DbContextOptionsBuilder = builder => builder.UseSqlServer(connectionString,
-                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
-                })
-
-                .AddOperationalStore(options =>
-                {
-                    options.DbContextOptionsBuilder = builder => builder.UseSqlServer(connectionString,
-                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
-                });
+                .AddConfigurationStore(
+                    builder => builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                            
+                .AddOperationalStore(
+                    builder => builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

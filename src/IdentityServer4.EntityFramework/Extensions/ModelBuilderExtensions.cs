@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityServer4.EntityFramework.Configuration;
 using IdentityServer4.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -10,22 +11,22 @@ namespace IdentityServer4.EntityFramework.Extensions
 {
     public static class ModelBuilderExtensions
     {
-        public static void ConfigureClientContext(this ModelBuilder modelBuilder)
+        public static void ConfigureClientContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions options)
         {
-            if (!string.IsNullOrEmpty(Constants.OperationalStoreDefaultSchema))
+            if (!string.IsNullOrEmpty(options.DefaultSchema))
             {
-                modelBuilder.HasDefaultSchema(Constants.OperationalStoreDefaultSchema);
+                modelBuilder.HasDefaultSchema(options.DefaultSchema);
             }
 
             modelBuilder.Entity<Client>(client =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.Client.Schema))
                 {
-                    client.ToTable(Constants.ClientTable.Name).HasKey(x => x.Id);
+                    client.ToTable(options.DatabaseTables.Client.Name).HasKey(x => x.Id);
                 }
                 else
                 {
-                    client.ToTable(Constants.ClientTable.Name, Constants.ClientTable.Schema).HasKey(x => x.Id);
+                    client.ToTable(options.DatabaseTables.Client.Name, options.DatabaseTables.Client.Schema).HasKey(x => x.Id);
                 }
                 client.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientName).HasMaxLength(200).IsRequired();
@@ -43,65 +44,65 @@ namespace IdentityServer4.EntityFramework.Extensions
 
             modelBuilder.Entity<ClientGrantType>(grantType =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientGrantTypeTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientGrantType.Schema))
                 {
-                    grantType.ToTable(Constants.ClientGrantTypeTable.Name);
+                    grantType.ToTable(options.DatabaseTables.ClientGrantType.Name);
                 }
                 else
                 {
-                    grantType.ToTable(Constants.ClientGrantTypeTable.Name, Constants.ClientGrantTypeTable.Schema);
+                    grantType.ToTable(options.DatabaseTables.ClientGrantType.Name, options.DatabaseTables.ClientGrantType.Schema);
                 }
                 grantType.Property(x => x.GrantType).HasMaxLength(250).IsRequired();
             });
 
             modelBuilder.Entity<ClientRedirectUri>(redirectUri =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientRedirectUriTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientRedirectUri.Schema))
                 {
-                    redirectUri.ToTable(Constants.ClientRedirectUriTable.Name);
+                    redirectUri.ToTable(options.DatabaseTables.ClientRedirectUri.Name);
                 }
                 else
                 {
-                    redirectUri.ToTable(Constants.ClientRedirectUriTable.Name, Constants.ClientRedirectUriTable.Schema);
+                    redirectUri.ToTable(options.DatabaseTables.ClientRedirectUri.Name, options.DatabaseTables.ClientRedirectUri.Schema);
                 }
                 redirectUri.Property(x => x.RedirectUri).HasMaxLength(2000).IsRequired();
             });
 
             modelBuilder.Entity<ClientPostLogoutRedirectUri>(postLogoutRedirectUri =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientPostLogoutRedirectUriTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientPostLogoutRedirectUri.Schema))
                 {
-                    postLogoutRedirectUri.ToTable(Constants.ClientPostLogoutRedirectUriTable.Name);
+                    postLogoutRedirectUri.ToTable(options.DatabaseTables.ClientPostLogoutRedirectUri.Name);
                 }
                 else
                 {
-                    postLogoutRedirectUri.ToTable(Constants.ClientPostLogoutRedirectUriTable.Name, Constants.ClientPostLogoutRedirectUriTable.Schema);
+                    postLogoutRedirectUri.ToTable(options.DatabaseTables.ClientPostLogoutRedirectUri.Name, options.DatabaseTables.ClientPostLogoutRedirectUri.Schema);
                 }
                 postLogoutRedirectUri.Property(x => x.PostLogoutRedirectUri).HasMaxLength(2000).IsRequired();
             });
 
             modelBuilder.Entity<ClientScope>(scope =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientScopeTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientScope.Schema))
                 {
-                    scope.ToTable(Constants.ClientScopeTable.Name);
+                    scope.ToTable(options.DatabaseTables.ClientScope.Name);
                 }
                 else
                 {
-                    scope.ToTable(Constants.ClientScopeTable.Name, Constants.ClientScopeTable.Schema);
+                    scope.ToTable(options.DatabaseTables.ClientScope.Name, options.DatabaseTables.ClientScope.Schema);
                 }
                 scope.Property(x => x.Scope).HasMaxLength(200).IsRequired();
             });
 
             modelBuilder.Entity<ClientSecret>(secret =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientSecretTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientSecret.Schema))
                 {
-                    secret.ToTable(Constants.ClientSecretTable.Name);
+                    secret.ToTable(options.DatabaseTables.ClientSecret.Name);
                 }
                 else
                 {
-                    secret.ToTable(Constants.ClientSecretTable.Name, Constants.ClientSecretTable.Schema);
+                    secret.ToTable(options.DatabaseTables.ClientSecret.Name, options.DatabaseTables.ClientSecret.Schema);
                 }
                 secret.Property(x => x.Value).HasMaxLength(250).IsRequired();
                 secret.Property(x => x.Type).HasMaxLength(250);
@@ -110,13 +111,13 @@ namespace IdentityServer4.EntityFramework.Extensions
 
             modelBuilder.Entity<ClientClaim>(claim =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientClaimTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientClaim.Schema))
                 {
-                    claim.ToTable(Constants.ClientClaimTable.Name);
+                    claim.ToTable(options.DatabaseTables.ClientClaim.Name);
                 }
                 else
                 {
-                    claim.ToTable(Constants.ClientClaimTable.Name, Constants.ClientClaimTable.Schema);
+                    claim.ToTable(options.DatabaseTables.ClientClaim.Name, options.DatabaseTables.ClientClaim.Schema);
                 }
                 claim.Property(x => x.Type).HasMaxLength(250).IsRequired();
                 claim.Property(x => x.Value).HasMaxLength(250).IsRequired();
@@ -124,47 +125,47 @@ namespace IdentityServer4.EntityFramework.Extensions
 
             modelBuilder.Entity<ClientIdPRestriction>(idPRestriction =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientIdPRestrictionTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientIdPRestriction.Schema))
                 {
-                    idPRestriction.ToTable(Constants.ClientIdPRestrictionTable.Name);
+                    idPRestriction.ToTable(options.DatabaseTables.ClientIdPRestriction.Name);
                 }
                 else
                 {
-                    idPRestriction.ToTable(Constants.ClientIdPRestrictionTable.Name, Constants.ClientIdPRestrictionTable.Schema);
+                    idPRestriction.ToTable(options.DatabaseTables.ClientIdPRestriction.Name, options.DatabaseTables.ClientIdPRestriction.Schema);
                 }
                 idPRestriction.Property(x => x.Provider).HasMaxLength(200).IsRequired();
             });
 
             modelBuilder.Entity<ClientCorsOrigin>(corsOrigin =>
             {
-                if (string.IsNullOrEmpty(Constants.ClientCorsOriginTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ClientCorsOrigin.Schema))
                 {
-                    corsOrigin.ToTable(Constants.ClientCorsOriginTable.Name);
+                    corsOrigin.ToTable(options.DatabaseTables.ClientCorsOrigin.Name);
                 }
                 else
                 {
-                    corsOrigin.ToTable(Constants.ClientCorsOriginTable.Name, Constants.ClientCorsOriginTable.Schema);
+                    corsOrigin.ToTable(options.DatabaseTables.ClientCorsOrigin.Name, options.DatabaseTables.ClientCorsOrigin.Schema);
                 }
                 corsOrigin.Property(x => x.Origin).HasMaxLength(150).IsRequired();
             });
         }
 
-        public static void ConfigurePersistedGrantContext(this ModelBuilder modelBuilder)
+        public static void ConfigurePersistedGrantContext(this ModelBuilder modelBuilder, OperationalStoreOptions options)
         {
-            if (!string.IsNullOrEmpty(Constants.ConfigurationStoreDefaultSchema))
+            if (!string.IsNullOrEmpty(options.DefaultSchema))
             {
-                modelBuilder.HasDefaultSchema(Constants.ConfigurationStoreDefaultSchema);
+                modelBuilder.HasDefaultSchema(options.DefaultSchema);
             }
 
             modelBuilder.Entity<PersistedGrant>(grant =>
             {
-                if (string.IsNullOrEmpty(Constants.PersistedGrantTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.PersistedGrant.Schema))
                 {
-                    grant.ToTable(Constants.PersistedGrantTable.Name);
+                    grant.ToTable(options.DatabaseTables.PersistedGrant.Name);
                 }
                 else
                 {
-                    grant.ToTable(Constants.PersistedGrantTable.Name, Constants.PersistedGrantTable.Schema);
+                    grant.ToTable(options.DatabaseTables.PersistedGrant.Name, options.DatabaseTables.PersistedGrant.Schema);
                 }
                 grant.HasKey(x => new {x.Key, x.Type});
                 grant.Property(x => x.SubjectId);
@@ -175,22 +176,22 @@ namespace IdentityServer4.EntityFramework.Extensions
             });
         }
 
-        public static void ConfigureScopeContext(this ModelBuilder modelBuilder)
+        public static void ConfigureScopeContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions options)
         {
-            if (!string.IsNullOrEmpty(Constants.OperationalStoreDefaultSchema))
+            if (!string.IsNullOrEmpty(options.DefaultSchema))
             {
-                modelBuilder.HasDefaultSchema(Constants.OperationalStoreDefaultSchema);
+                modelBuilder.HasDefaultSchema(options.DefaultSchema);
             }
 
             modelBuilder.Entity<ScopeClaim>(scopeClaim =>
             {
-                if (string.IsNullOrEmpty(Constants.ScopeClaimTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ScopeClaim.Schema))
                 {
-                    scopeClaim.ToTable(Constants.ScopeClaimTable.Name).HasKey(x => x.Id);
+                    scopeClaim.ToTable(options.DatabaseTables.ScopeClaim.Name).HasKey(x => x.Id);
                 }
                 else
                 {
-                    scopeClaim.ToTable(Constants.ScopeClaimTable.Name, Constants.ScopeClaimTable.Schema).HasKey(x => x.Id);
+                    scopeClaim.ToTable(options.DatabaseTables.ScopeClaim.Name, options.DatabaseTables.ScopeClaim.Schema).HasKey(x => x.Id);
                 }
                 scopeClaim.Property(x => x.Name).HasMaxLength(200).IsRequired();
                 scopeClaim.Property(x => x.Description).HasMaxLength(1000);
@@ -198,13 +199,13 @@ namespace IdentityServer4.EntityFramework.Extensions
 
             modelBuilder.Entity<ScopeSecret>(scopeSecret =>
             {
-                if (string.IsNullOrEmpty(Constants.ScopeSecretTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.ScopeSecret.Schema))
                 {
-                    scopeSecret.ToTable(Constants.ScopeSecretTable.Name).HasKey(x => x.Id);
+                    scopeSecret.ToTable(options.DatabaseTables.ScopeSecret.Name).HasKey(x => x.Id);
                 }
                 else
                 {
-                    scopeSecret.ToTable(Constants.ScopeSecretTable.Name, Constants.ScopeSecretTable.Schema).HasKey(x => x.Id);
+                    scopeSecret.ToTable(options.DatabaseTables.ScopeSecret.Name, options.DatabaseTables.ScopeSecret.Schema).HasKey(x => x.Id);
                 }
                 scopeSecret.Property(x => x.Description).HasMaxLength(1000);
                 scopeSecret.Property(x => x.Type).HasMaxLength(250);
@@ -213,13 +214,13 @@ namespace IdentityServer4.EntityFramework.Extensions
 
             modelBuilder.Entity<Scope>(scope =>
             {
-                if (string.IsNullOrEmpty(Constants.ScopeTable.Schema))
+                if (string.IsNullOrEmpty(options.DatabaseTables.Scope.Schema))
                 {
-                    scope.ToTable(Constants.ScopeTable.Name).HasKey(x => x.Id);
+                    scope.ToTable(options.DatabaseTables.Scope.Name).HasKey(x => x.Id);
                 }
                 else
                 {
-                    scope.ToTable(Constants.ScopeTable.Name, Constants.ScopeTable.Schema).HasKey(x => x.Id);
+                    scope.ToTable(options.DatabaseTables.Scope.Name, options.DatabaseTables.Scope.Schema).HasKey(x => x.Id);
                 }
                 scope.Property(x => x.Name).HasMaxLength(200).IsRequired();
                 scope.Property(x => x.DisplayName).HasMaxLength(200);

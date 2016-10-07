@@ -2,17 +2,12 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using Microsoft.EntityFrameworkCore;
-using System;
-
 namespace IdentityServer4.EntityFramework.Configuration
 {
     public class OperationalStoreOptions
     {
-        public string DefaultSchema { get; set; } = Constants.OperationalStoreDefaultSchema;
+        public string DefaultSchema { get; set; }
 
-        public OperationalStoreDatabaseTableOptions DatabaseTableOptions { get; set; } = new OperationalStoreDatabaseTableOptions();
-        
-        public Action<DbContextOptionsBuilder> DbContextOptionsBuilder { get; set; }
+        public OperationalStoreDatabaseTables DatabaseTables { get; set; } = new OperationalStoreDatabaseTables();
     }
 }

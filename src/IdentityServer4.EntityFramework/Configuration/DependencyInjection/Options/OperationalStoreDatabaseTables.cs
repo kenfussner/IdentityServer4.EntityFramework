@@ -4,8 +4,8 @@
 
 namespace IdentityServer4.EntityFramework.Configuration
 {
-    public class OperationalStoreDatabaseTableOptions
+    public class OperationalStoreDatabaseTables
     {
-        public DatabaseTable PersistedGrant { get; set; } = Constants.PersistedGrantTable;
+        public DatabaseTable PersistedGrant { get; set; } = new DatabaseTable { Name = "PersistedGrants", Schema = null };
     }
 }
